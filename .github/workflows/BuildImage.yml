@@ -4,8 +4,8 @@ on: [push, pull_request, workflow_dispatch]
 
 env:
   ENDPOINT: "linuxserver/mods"
-  BASEIMAGE: "deluge"
-  MODNAME: "filebot"
+  BASEIMAGE: "rutorrent"
+  MODNAME: "quickbox-theme"
 
 jobs:
   build:

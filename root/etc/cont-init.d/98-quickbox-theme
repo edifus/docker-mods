@@ -1,0 +1,20 @@
+#!/usr/bin/with-contenv bash
+
+# install/update theme
+if [ ! -d /config/themes/club-QuickBox ]; then
+  [ -d /config/themes ] || \
+    mkdir -p /config/themes && \
+    chown abc:abc /config/themes
+  cd /config/themes
+  git clone https://github.com/QuickBox/club-QuickBox.git club-QuickBox
+elif [ -d /config/themes/club-QuickBox ]; then
+  cd /config/themes/club-QuickBox
+  git pull --ff-only
+fi
+
+# set correct permissions
+chown abc:abc -R /config/themes/club-QuickBox
+
+# install/update theme
+cp -aR /config/themes/club-QuickBox /app/rutorrent/plugins/theme/themes
+

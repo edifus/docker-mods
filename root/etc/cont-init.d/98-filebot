@@ -44,10 +44,13 @@ elif [[ $(cat /config/.mediainfo) != $MEDIAINFO_VERSION ]] || \
      [[ $(cat /config/.libzen) != $LIBZEN_VERSION ]]; then
   echo "**** mediainfo / libzen out of date - reinstalling ****"
   rm -rf /mediainfo/*
+  echo "**** curl https://mediaarea.net/download/binary/mediainfo/${MEDIAINFO_VERSION}/${MEDIAINFO_PACKAGE} ****"
   curl -o /mediainfo/mediainfo.deb \
    -L "https://mediaarea.net/download/binary/mediainfo/${MEDIAINFO_VERSION}/${MEDIAINFO_PACKAGE}"
+  echo "**** curl https://mediaarea.net/download/binary/libmediainfo0/${MEDIAINFO_VERSION}/${LIBMEDIAINFO_PACKAGE} ****"
   curl -o /mediainfo/libmediainfo.deb \
    -L "https://mediaarea.net/download/binary/libmediainfo0/${MEDIAINFO_VERSION}/${LIBMEDIAINFO_PACKAGE}"
+  echo "**** curl https://mediaarea.net/download/binary/libzen0/${LIBZEN_VERSION}/${LIBZEN_PACKAGE} ****"
   curl -o /mediainfo/libzen.deb \
    -L "https://mediaarea.net/download/binary/libzen0/${LIBZEN_VERSION}/${LIBZEN_PACKAGE}"
   dpkg -i /mediainfo/{libzen.deb,libmediainfo.deb,mediainfo.deb}

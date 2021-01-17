@@ -33,10 +33,15 @@ if [ ! -e /config/.irssi/scripts/autorun/autodl-irssi.pl ]; then
   AUTODL_URL=$(echo ${AUTODL_REL} | jq -r '.assets[].browser_download_url')
   echo "**** autodl-irssi not found - installing v${AUTODL_VER} ****"
   mkdir -p /config/.irssi/scripts/autorun
-  wget --quiet -O /config/.irssi/scripts/autodl-irssi.zip ${AUTODL_URL}
-  unzip -q -d /config/.irssi/scripts -o /config/.irssi/scripts/autodl-irssi.zip
+  wget -q \
+    -O /config/.irssi/scripts/autodl-irssi.zip \
+    ${AUTODL_URL}
+  unzip -q \
+    -d /config/.irssi/scripts \
+    -o /config/.irssi/scripts/autodl-irssi.zip
   rm -f /config/.irssi/scripts/autodl-irssi.zip
-  cp /config/.irssi/scripts/autodl-irssi.pl /config/.irssi/scripts/autorun/
+  cp /config/.irssi/scripts/autodl-irssi.pl \
+     /config/.irssi/scripts/autorun/
   mkdir -p /config/.autodl
   cat << EOL > /config/.autodl/autodl.cfg
 [options]
@@ -57,7 +62,8 @@ if [ ! -d /config/plugins/autodl-irssi ]; then
     mkdir -p /config/plugins
     chown abc:abc /config/plugins
   fi
-  git clone https://github.com/autodl-community/autodl-rutorrent.git /config/plugins/autodl-irssi
+  git clone https://github.com/autodl-community/autodl-rutorrent.git \
+    /config/plugins/autodl-irssi
   cat << EOL > /config/plugins/autodl-irssi/conf.php
 <?php
 \$autodlPort = 54450;
@@ -66,8 +72,7 @@ if [ ! -d /config/plugins/autodl-irssi ]; then
 EOL
 elif [ -d /config/plugins/autodl-irssi ]; then
   echo "**** autodl-irssi rutorrent plugin found - running update ****"
-  cd /config/plugins/autodl-irssi
-  git pull --ff-only
+  git -C /config/plugins/autodl-irssi pull --ff-only
 fi
 
 # unset generated password

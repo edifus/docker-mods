@@ -4,8 +4,8 @@ on: [push, pull_request, workflow_dispatch]
 
 env:
   ENDPOINT: "linuxserver/mods"
-  BASEIMAGE: "rutorrent"
-  MODNAME: "autodl-irssi"
+  BASEIMAGE: "deluge"
+  MODNAME: "filebot"
 
 jobs:
   build:

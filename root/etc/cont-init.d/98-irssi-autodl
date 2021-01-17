@@ -32,9 +32,7 @@ if [ ! -e /config/.irssi/scripts/autorun/autodl-irssi.pl ]; then
   echo "**** autodl-irssi not found - installing ****"
   mkdir -p /config/.irssi/scripts/autorun
   cd /config/.irssi/scripts
-  AUTODL_URL=$(curl -sL \
-    https://api.github.com/repos/autodl-community/autodl-irssi/releases/latest | \
-    grep -Po '(?<="browser_download_url": ")(.*-v[\d.]+.zip)')
+  AUTODL_URL=$(curl -sL https://api.github.com/repos/autodl-community/autodl-irssi/releases/latest | grep -Po '(?<="browser_download_url": ")(.*-v[\d.]+.zip)')
   wget --quiet -O autodl-irssi.zip $AUTODL_URL
   unzip -q -o autodl-irssi.zip
   rm -f autodl-irssi.zip

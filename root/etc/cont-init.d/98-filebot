@@ -36,7 +36,7 @@ if [ ! -e /usr/bin/mediainfo ]; then
    -L "https://mediaarea.net/download/binary/mediainfo/${MEDIAINFO_VERSION}/${MEDIAINFO_PACKAGE}"
   curl -o /mediainfo/libmediainfo.deb \
    -L "https://mediaarea.net/download/binary/libmediainfo0/${MEDIAINFO_VERSION}/${LIBMEDIAINFO_PACKAGE}"
-  curl -o mediainfo/libzen.deb \
+  curl -o /mediainfo/libzen.deb \
    -L "https://mediaarea.net/download/binary/libzen0/${LIBZEN_VERSION}/${LIBZEN_PACKAGE}"
   dpkg -i /mediainfo/{libzen.deb,libmediainfo.deb,mediainfo.deb}
   echo $MEDIAINFO_VERSION > /config/.mediainfo

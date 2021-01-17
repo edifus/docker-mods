@@ -1,5 +1,8 @@
 #!/usr/bin/with-contenv bash
 
+# set home for irssi files
+export HOME=/config
+
 # generate random password for initial plug-in setup
 adlpass=$(openssl rand -base64 20)
 

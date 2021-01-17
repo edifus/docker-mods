@@ -1,12 +1,8 @@
 #!/usr/bin/with-contenv bash
 
 # latest mediainfo versions
-MEDIAINFO_VERSION=$(curl -sL \
-  https://api.github.com/repos/MediaArea/MediaInfo/releases/latest | \
-  grep -Po '(?<="name": ")([\d.]+)')
-LIBZEN_VERSION=$(curl -sL \
-  https://api.github.com/repos/MediaArea/ZenLib/releases/latest | \
-  grep -Po '(?<="name": ")(v[\d.]+)')
+MEDIAINFO_VERSION=$(curl -sL https://api.github.com/repos/MediaArea/MediaInfo/releases/latest | grep -Po '(?<="name": ")([\d.]+)')
+LIBZEN_VERSION=$(curl -sL https://api.github.com/repos/MediaArea/ZenLib/releases/latest | grep -Po '(?<="name": ")(v[\d.]+)')
 MEDIAINFO_PACKAGE="mediainfo_${MEDIAINFO_VERSION}-1_amd64.xUbuntu_18.04.deb"
 LIBMEDIAINFO_PACKAGE="libmediainfo0v5_${MEDIAINFO_VERSION}-1_amd64.xUbuntu_18.04.deb"
 LIBZEN_PACKAGE="libzen0v5_${LIBZEN_VERSION}-1_amd64.xUbuntu_18.04.deb"
@@ -32,10 +28,13 @@ fi
 if [ ! -e /usr/bin/mediainfo ]; then
   echo "**** mediainfo / libzen not found - installing ****"
   mkdir /mediainfo
+  echo "**** curl https://mediaarea.net/download/binary/mediainfo/${MEDIAINFO_VERSION}/${MEDIAINFO_PACKAGE} ****"
   curl -o /mediainfo/mediainfo.deb \
    -L "https://mediaarea.net/download/binary/mediainfo/${MEDIAINFO_VERSION}/${MEDIAINFO_PACKAGE}"
+  echo "**** curl https://mediaarea.net/download/binary/libmediainfo0/${MEDIAINFO_VERSION}/${LIBMEDIAINFO_PACKAGE} ****"
   curl -o /mediainfo/libmediainfo.deb \
    -L "https://mediaarea.net/download/binary/libmediainfo0/${MEDIAINFO_VERSION}/${LIBMEDIAINFO_PACKAGE}"
+  echo "**** curl https://mediaarea.net/download/binary/libzen0/${LIBZEN_VERSION}/${LIBZEN_PACKAGE} ****"
   curl -o /mediainfo/libzen.deb \
    -L "https://mediaarea.net/download/binary/libzen0/${LIBZEN_VERSION}/${LIBZEN_PACKAGE}"
   dpkg -i /mediainfo/{libzen.deb,libmediainfo.deb,mediainfo.deb}

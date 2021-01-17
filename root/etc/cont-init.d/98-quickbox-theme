@@ -9,7 +9,7 @@ if [ ! -d /config/themes/club-QuickBox ]; then
   cd /config/themes
   git clone https://github.com/QuickBox/club-QuickBox.git club-QuickBox
 elif [ -d /config/themes/club-QuickBox ]; then
-  echo "**** club-QuickBox theme found - updating ****"
+  echo "**** club-QuickBox theme found - running update ****"
   cd /config/themes/club-QuickBox
   git pull --ff-only
 fi

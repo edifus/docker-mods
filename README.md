@@ -1,4 +1,4 @@
-# club-QuickBox theme - club-QuickBox theme mod for rutorrent
+# club-QuickBox theme - club-QuickBox theme for rutorrent
 
 This mod adds club-QuickBox theme to rutorrent.
 

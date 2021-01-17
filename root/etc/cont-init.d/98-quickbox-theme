@@ -2,12 +2,14 @@
 
 # install/update theme
 if [ ! -d /config/themes/club-QuickBox ]; then
+  echo "**** club-QuickBox theme not found - installing ****"
   [ -d /config/themes ] || \
     mkdir -p /config/themes && \
     chown abc:abc /config/themes
   cd /config/themes
   git clone https://github.com/QuickBox/club-QuickBox.git club-QuickBox
 elif [ -d /config/themes/club-QuickBox ]; then
+  echo "**** club-QuickBox theme found - updating ****"
   cd /config/themes/club-QuickBox
   git pull --ff-only
 fi
@@ -17,4 +19,3 @@ chown abc:abc -R /config/themes/club-QuickBox
 
 # install/update theme
 cp -aR /config/themes/club-QuickBox /app/rutorrent/plugins/theme/themes
-

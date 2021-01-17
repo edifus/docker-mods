@@ -1,61 +1,66 @@
 #!/usr/bin/with-contenv bash
 
-# latest mediainfo versions
-MEDIAINFO_VERSION=$(curl -sL https://api.github.com/repos/MediaArea/MediaInfo/releases/latest | grep -Po '(?<="name": ")([\d.]+)')
-LIBZEN_VERSION=$(curl -sL https://api.github.com/repos/MediaArea/ZenLib/releases/latest | grep -Po '(?<="name": ")(v[\d.]+)')
-MEDIAINFO_PACKAGE="mediainfo_${MEDIAINFO_VERSION}-1_amd64.xUbuntu_18.04.deb"
-LIBMEDIAINFO_PACKAGE="libmediainfo0v5_${MEDIAINFO_VERSION}-1_amd64.xUbuntu_18.04.deb"
-LIBZEN_PACKAGE="libzen0v5_${LIBZEN_VERSION:1}-1_amd64.xUbuntu_18.04.deb"
+# install java and other dependancies
+if [ ! -e /usr/bin/java ]; then
+  echo "**** java not found - installing ****"
+  apt-get update -y -q
+  DEBIAN_FRONTEND=noninteractive apt-get install -y \
+    default-jre-headless \
+    libjna-java \
+    libcurl3-gnutls \
+    libmms0 \
+    jq \
+    libchromaprint-tools \
+    p7zip-rar \
+    mkvtoolnix \
+    mp4v2-utils \
+    inotify-tools
+else
+  echo "**** java found - skipping install ****"
+fi
 
-# https://github.com/filebot/filebot-docker
+# install filebot
 if [ ! -e /usr/bin/filebot ]; then
   echo "**** filebot not found - installing ****"
   APT_KEY_DONT_WARN_ON_DANGEROUS_USAGE=1 apt-key adv --fetch-keys \
     https://raw.githubusercontent.com/filebot/plugins/master/gpg/maintainer.pub
   echo "deb [arch=all] https://get.filebot.net/deb/ universal main" > /etc/apt/sources.list.d/filebot.list
-  apt-get update -y
-  DEBIAN_FRONTEND=noninteractive apt-get install -y \
-    default-jre-headless libjna-java libcurl3-gnutls libmms0 \
-    libchromaprint-tools p7zip-rar mkvtoolnix mp4v2-utils inotify-tools
+  apt-get update -y -q
   DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends filebot
-  # clean-up
-  rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 else
   echo "**** filebot found - skipping install ****"
 fi
 
-# install/update mediainfo
+# install mediainfo
 if [ ! -e /usr/bin/mediainfo ]; then
   echo "**** mediainfo / libzen not found - installing ****"
-  mkdir /mediainfo
+  # get latest mediainfo / libzen versions
+  MEDIAINFO_VERSION=$(curl -sL https://api.github.com/repos/MediaArea/MediaInfo/releases/latest \
+    | jq -r '.tag_name')
+  LIBZEN_VERSION=$(curl -sL https://api.github.com/repos/MediaArea/ZenLib/releases/latest \
+    | jq -r '.tag_name')
+
+  # mediainfo and libzen packages
+  MEDIAINFO_PACKAGE="mediainfo_${MEDIAINFO_VERSION:1}-1_amd64.xUbuntu_18.04.deb"
+  LIBMEDIAINFO_PACKAGE="libmediainfo0v5_${MEDIAINFO_VERSION:1}-1_amd64.xUbuntu_18.04.deb"
+  LIBZEN_PACKAGE="libzen0v5_${LIBZEN_VERSION:1}-1_amd64.xUbuntu_18.04.deb"
+
+  # install mediainfo and libzen
+  mkdir -p /mediainfo
   curl -o /mediainfo/mediainfo.deb \
-   -L "https://mediaarea.net/download/binary/mediainfo/${MEDIAINFO_VERSION}/${MEDIAINFO_PACKAGE}"
+   -L "https://mediaarea.net/download/binary/mediainfo/${MEDIAINFO_VERSION:1}/${MEDIAINFO_PACKAGE}"
   curl -o /mediainfo/libmediainfo.deb \
-   -L "https://mediaarea.net/download/binary/libmediainfo0/${MEDIAINFO_VERSION}/${LIBMEDIAINFO_PACKAGE}"
+   -L "https://mediaarea.net/download/binary/libmediainfo0/${MEDIAINFO_VERSION:1}/${LIBMEDIAINFO_PACKAGE}"
   curl -o /mediainfo/libzen.deb \
    -L "https://mediaarea.net/download/binary/libzen0/${LIBZEN_VERSION:1}/${LIBZEN_PACKAGE}"
   dpkg -i /mediainfo/{libzen.deb,libmediainfo.deb,mediainfo.deb}
-  echo $MEDIAINFO_VERSION > /config/.mediainfo
-  echo $LIBZEN_VERSION > /config/.libzen
-elif [[ $(cat /config/.mediainfo) != $MEDIAINFO_VERSION ]] || \
-     [[ $(cat /config/.libzen) != $LIBZEN_VERSION ]]; then
-  echo "**** mediainfo / libzen out of date - reinstalling ****"
-  rm -rf /mediainfo/*
-  curl -o /mediainfo/mediainfo.deb \
-   -L "https://mediaarea.net/download/binary/mediainfo/${MEDIAINFO_VERSION}/${MEDIAINFO_PACKAGE}"
-  curl -o /mediainfo/libmediainfo.deb \
-   -L "https://mediaarea.net/download/binary/libmediainfo0/${MEDIAINFO_VERSION}/${LIBMEDIAINFO_PACKAGE}"
-  curl -o /mediainfo/libzen.deb \
-   -L "https://mediaarea.net/download/binary/libzen0/${LIBZEN_VERSION:1}/${LIBZEN_PACKAGE}"
-  dpkg -i /mediainfo/{libzen.deb,libmediainfo.deb,mediainfo.deb}
-  echo $MEDIAINFO_VERSION > /config/.mediainfo
-  echo $LIBZEN_VERSION > /config/.libzen
+  rm -rf /mediainfo
 else
   echo "**** mediainfo / libzen found - skipping install"
 fi
 
-# set permissions
-chown abc:abc /config/{.mediainfo,.libzen}
+# clean-up
+rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 
 # confirm filebot install
 echo "**** exec \"filebot -script fn:sysinfo\" ****"

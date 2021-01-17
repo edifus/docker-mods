@@ -9,6 +9,6 @@ trap _term SIGTERM
 
 screen -D -m -S irssi \
   s6-setuidgid abc \
-  HOME=/config /usr/bin/irssi --home /config/.irssi &
+  /usr/bin/irssi --home /config/.irssi &
 
 wait

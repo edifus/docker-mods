@@ -83,7 +83,7 @@ fi
 unset adlpass
 
 # set correct permissions
-chown abc:abc -R /config/{.autodl,.irssi,plugins/autodl-irssi}
+chown abc:abc -R /config/{.autodl,.irssi,screenrc,plugins/autodl-irssi}
 
 # install/update plugin
 cp -aR /config/plugins/autodl-irssi /app/rutorrent/plugins/

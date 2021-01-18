@@ -16,7 +16,8 @@ if [ ! -e /usr/bin/irssi ]; then
     perl-xml-libxml \
     perl-digest-sha1 \
     perl-json \
-    perl-json-xs
+    perl-json-xs \
+    tmux
   if [ ! -d /config/.irssi ]; then
     mkdir -p /config/.irssi
     echo 'load perl' > /config/.irssi/startup

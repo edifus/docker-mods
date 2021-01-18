@@ -3,21 +3,7 @@ termcap xterm 'is=\E[r\E[m\E[2J\E[H\E[?7h\E[?1;4;6l'
 terminfo xterm 'is=\E[r\E[m\E[2J\E[H\E[?7h\E[?1;4;6l'
 termcapinfo xterm 'is=\E[r\E[m\E[2J\E[H\E[?7h\E[?1;4;6l'
 
-# 256 colors
+# set xterm to 256 colors
 attrcolor b ".I"
 termcapinfo xterm 'Co#256:AB=\E[48;5;%dm:AF=\E[38;5;%dm'
 defbce on
-
-# huge scrollback buffer
-defscrollback 5000
-
-#remove some stupid / dangerous key bindings
-bind ^k
-#bind L
-bind ^\
-#make them better
-bind \\ quit
-bind K kill
-bind I login on
-bind O login off
-bind } history

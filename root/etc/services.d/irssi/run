@@ -8,8 +8,8 @@ _term() {
 trap _term SIGTERM
 
 export HOME="/config"
-#screen -D -m -S irssi s6-setuidgid abc /usr/bin/irssi --home /config/.irssi &
-tmux -2 -c \
-  "s6-setuidgid abc /usr/bin/irssi --home /config/.irssi" &
+screen -OdmS irssi \
+  -T screen-256color \
+  s6-setuidgid abc /usr/bin/irssi --home /config/.irssi &
 
 wait

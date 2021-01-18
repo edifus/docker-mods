@@ -16,8 +16,7 @@ if [ ! -e /usr/bin/irssi ]; then
     perl-xml-libxml \
     perl-digest-sha1 \
     perl-json \
-    perl-json-xs \
-    tmux
+    perl-json-xs
   if [ ! -d /config/.irssi ]; then
     mkdir -p /config/.irssi
     echo 'load perl' > /config/.irssi/startup
@@ -75,6 +74,11 @@ elif [ -d /config/plugins/autodl-irssi ]; then
   echo "**** autodl-irssi rutorrent plugin found - running update ****"
   git -C /config/plugins/autodl-irssi pull --ff-only
 fi
+
+# configure screen (to access irssi inside container)
+# docker exec -it rutorrent screen -r irssi
+[[ ! -f /config/screenrc ]] && \
+  cp /defaults/screenrc /config/screenrc
 
 # unset generated password
 unset adlpass

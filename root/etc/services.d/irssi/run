@@ -8,9 +8,9 @@ _term() {
 trap _term SIGTERM
 
 export HOME="/config"
-export COLUMNS="190"
-screen -AaDmS irssi \
-  -T screen-256color \
-  s6-setuidgid abc /usr/bin/irssi --home /config/.irssi &
+screen -c /config/screenrc \
+  -D -m -S irssi \
+  s6-setuidgid abc \
+  /usr/bin/irssi --home /config/.irssi &
 
 wait

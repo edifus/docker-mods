@@ -3,6 +3,10 @@
 # generate random password for initial plug-in setup
 adlpass=$(openssl rand -base64 20)
 
+# configure screen to more than 80 columns
+[[ ! -f /config/screenrc ]] && \
+  cp /defaults/screenrc /config/screenrc
+
 # install irssi with perl dependancies and php7-sockets
 if [ ! -e /usr/bin/irssi ]; then
   echo "**** irssi not found - installing ****"
@@ -74,11 +78,6 @@ elif [ -d /config/plugins/autodl-irssi ]; then
   echo "**** autodl-irssi rutorrent plugin found - running update ****"
   git -C /config/plugins/autodl-irssi pull --ff-only
 fi
-
-# configure screen (to access irssi inside container)
-# docker exec -it rutorrent screen -r irssi
-[[ ! -f /config/screenrc ]] && \
-  cp /defaults/screenrc /config/screenrc
 
 # unset generated password
 unset adlpass

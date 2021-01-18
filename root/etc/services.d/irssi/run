@@ -9,9 +9,7 @@ trap _term SIGTERM
 
 export HOME="/config"
 #screen -D -m -S irssi s6-setuidgid abc /usr/bin/irssi --home /config/.irssi &
-tmux -2 -d new-window \
-  -n irssi \
-  -s autodl-irssi \
+tmux -2 -c \
   "s6-setuidgid abc /usr/bin/irssi --home /config/.irssi" &
 
 wait

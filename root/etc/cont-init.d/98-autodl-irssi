@@ -1,8 +1,5 @@
 #!/usr/bin/with-contenv bash
 
-# generate random password for initial plug-in setup
-adlpass=$(openssl rand -base64 20)
-
 # configure screen width to more than 80 columns
 [[ ! -f /config/.screenrc ]] && \
   cp /defaults/screenrc /config/.screenrc
@@ -34,6 +31,7 @@ fi
 # install autodl-irssi script
 if [ ! -e /config/.irssi/scripts/autorun/autodl-irssi.pl ]; then
   echo "**** autodl-irssi not found - installing ****"
+  adlpass=$(openssl rand -base64 20)
   mkdir -p /config/.irssi/scripts/autorun
   wget -q \
     -O /config/.irssi/scripts/autodl-irssi.zip \
@@ -73,13 +71,11 @@ if [ ! -d /config/plugins/autodl-irssi ]; then
 \$autodlPassword = "$adlpass";
 ?>
 EOL
+  unset adlpass
 elif [ -d /config/plugins/autodl-irssi ]; then
   echo "**** autodl-irssi rutorrent plugin found - running update ****"
   git -C /config/plugins/autodl-irssi pull --ff-only
 fi
-
-# unset generated password
-unset adlpass
 
 # set correct permissions
 chown abc:abc -R /config/{.autodl,.irssi,.screenrc,plugins/autodl-irssi}

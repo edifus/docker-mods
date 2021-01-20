@@ -3,9 +3,9 @@
 # generate random password for initial plug-in setup
 adlpass=$(openssl rand -base64 20)
 
-# configure screen to more than 80 columns
+# configure screen width to more than 80 columns
 [[ ! -f /config/screenrc ]] && \
-  cp /defaults/screenrc /config/screenrc
+  cp /defaults/screenrc /config/.screenrc
 
 # install irssi with perl dependancies and php7-sockets
 if [ ! -e /usr/bin/irssi ]; then
@@ -13,7 +13,7 @@ if [ ! -e /usr/bin/irssi ]; then
   apk add --no-cache --upgrade \
     php7-sockets \
     irssi-perl \
-    perl jq \
+    perl \
     perl-archive-zip \
     perl-net-ssleay \
     perl-html-parser \
@@ -22,6 +22,7 @@ if [ ! -e /usr/bin/irssi ]; then
     perl-json \
     perl-json-xs
   if [ ! -d /config/.irssi ]; then
+    # first time setup (load perl / enable perl scripts)
     mkdir -p /config/.irssi
     echo 'load perl' > /config/.irssi/startup
   fi
@@ -30,16 +31,14 @@ else
   # recreate container to update
 fi
 
-# install autodl-irssi
+# install autodl-irssi script
 if [ ! -e /config/.irssi/scripts/autorun/autodl-irssi.pl ]; then
-  AUTODL_REL=$(curl -s https://api.github.com/repos/autodl-community/autodl-irssi/releases/latest)
-  AUTODL_VER=$(echo ${AUTODL_REL} | jq -r '.tag_name')
-  AUTODL_URL=$(echo ${AUTODL_REL} | jq -r '.assets[].browser_download_url')
-  echo "**** autodl-irssi not found - installing v${AUTODL_VER} ****"
+  echo "**** autodl-irssi not found - installing ****"
   mkdir -p /config/.irssi/scripts/autorun
   wget -q \
     -O /config/.irssi/scripts/autodl-irssi.zip \
-    ${AUTODL_URL}
+    $(curl -sX GET "https://api.github.com/repos/autodl-community/autodl-irssi/releases/latest" \
+      | awk '/browser_download_url/{print $4;exit}' FS='[""]')
   unzip -q \
     -d /config/.irssi/scripts \
     -o /config/.irssi/scripts/autodl-irssi.zip
@@ -59,7 +58,7 @@ else
   # configured to auto-update in options
 fi
 
-# install/update rutorrent autodl-irssi plugin
+# install/update autodl-irssi rutorrent plugin
 if [ ! -d /config/plugins/autodl-irssi ]; then
   echo "**** autodl-irssi rutorrent plugin not found - installing ****"
   if [ ! -d /config/plugins ]; then
@@ -83,7 +82,7 @@ fi
 unset adlpass
 
 # set correct permissions
-chown abc:abc -R /config/{.autodl,.irssi,screenrc,plugins/autodl-irssi}
+chown abc:abc -R /config/{.autodl,.irssi,.screenrc,plugins/autodl-irssi}
 
 # install/update plugin
 cp -aR /config/plugins/autodl-irssi /app/rutorrent/plugins/

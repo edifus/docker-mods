@@ -8,7 +8,7 @@ _term() {
 trap _term SIGTERM
 
 export HOME="/config"
-screen -c /config/screenrc \
+screen -c /config/.screenrc \
   -D -m -S irssi \
   s6-setuidgid abc \
   /usr/bin/irssi --home /config/.irssi &

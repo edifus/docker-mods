@@ -42,7 +42,7 @@ if [ ! -e /config/.irssi/scripts/autorun/autodl-irssi.pl ]; then
     -o /config/.irssi/scripts/autodl-irssi.zip
   rm -f /config/.irssi/scripts/autodl-irssi.zip
   cp -v /config/.irssi/scripts/autodl-irssi.pl \
-     /config/.irssi/scripts/autorun/
+    /config/.irssi/scripts/autorun/
   mkdir -p /config/.autodl
   cat << EOL > /config/.autodl/autodl.cfg
 [options]

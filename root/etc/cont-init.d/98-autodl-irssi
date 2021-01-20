@@ -4,7 +4,7 @@
 adlpass=$(openssl rand -base64 20)
 
 # configure screen width to more than 80 columns
-[[ ! -f /config/screenrc ]] && \
+[[ ! -f /config/.screenrc ]] && \
   cp /defaults/screenrc /config/.screenrc
 
 # install irssi with perl dependancies and php7-sockets

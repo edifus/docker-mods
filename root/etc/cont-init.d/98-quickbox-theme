@@ -3,15 +3,15 @@
 # install/update theme
 if [ ! -d /config/themes/club-QuickBox ]; then
   echo "**** club-QuickBox theme not found - installing ****"
-  [ -d /config/themes ] || \
-    mkdir -p /config/themes && \
+  if [ ! -d /config/themes ]; then
+    mkdir -p /config/themes
     chown abc:abc /config/themes
-  cd /config/themes
-  git clone https://github.com/QuickBox/club-QuickBox.git club-QuickBox
+  fi
+  git clone https://github.com/QuickBox/club-QuickBox.git \
+    /config/themes/club-QuickBox
 elif [ -d /config/themes/club-QuickBox ]; then
   echo "**** club-QuickBox theme found - running update ****"
-  cd /config/themes/club-QuickBox
-  git pull --ff-only
+  git -C /config/themes/club-QuickBox pull --ff-only
 fi
 
 # set correct permissions

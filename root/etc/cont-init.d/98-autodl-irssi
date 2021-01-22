@@ -2,7 +2,7 @@
 
 # configure screen width to more than 80 columns
 [[ ! -f /config/.screenrc ]] && \
-  cp /defaults/screenrc /config/.screenrc
+  cp -v /defaults/screenrc /config/.screenrc
 
 # install irssi with perl dependancies and php7-sockets
 if [ ! -e /usr/bin/irssi ]; then

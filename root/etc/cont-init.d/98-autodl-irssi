@@ -19,7 +19,7 @@ if [ ! -e /usr/bin/irssi ]; then
     perl-json \
     perl-json-xs
   if [ ! -d /config/.irssi ]; then
-    # first time setup (load perl / enable perl scripts)
+    # first time setup (enable perl scripts for autodl-irssi)
     mkdir -p /config/.irssi
     echo 'load perl' > /config/.irssi/startup
   fi
@@ -36,9 +36,8 @@ if [ ! -e /config/.irssi/scripts/autorun/autodl-irssi.pl ]; then
   wget -q \
     -O /config/.irssi/scripts/autodl-irssi.zip \
     $(curl -sX GET "https://api.github.com/repos/autodl-community/autodl-irssi/releases/latest" \
-      | awk '/browser_download_url/{print $4;exit}' FS='[""]')
-  unzip -q \
-    -d /config/.irssi/scripts \
+    | awk '/browser_download_url/{print $4;exit}' FS='[""]')
+  unzip -d /config/.irssi/scripts \
     -o /config/.irssi/scripts/autodl-irssi.zip
   rm -f /config/.irssi/scripts/autodl-irssi.zip
   cp -v /config/.irssi/scripts/autodl-irssi.pl \
@@ -48,7 +47,7 @@ if [ ! -e /config/.irssi/scripts/autorun/autodl-irssi.pl ]; then
 [options]
 update-check = auto
 rt-address = /run/php/.rtorrent.sock
-gui-server-port = 54450
+gui-server-port = 64450
 gui-server-password = $adlpass
 EOL
 else
@@ -67,7 +66,7 @@ if [ ! -d /config/plugins/autodl-irssi ]; then
     /config/plugins/autodl-irssi
   cat << EOL > /config/plugins/autodl-irssi/conf.php
 <?php
-\$autodlPort = 54450;
+\$autodlPort = 64450;
 \$autodlPassword = "$adlpass";
 ?>
 EOL

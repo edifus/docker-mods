@@ -35,7 +35,7 @@ if [ ! -e /config/.irssi/scripts/autorun/autodl-irssi.pl ]; then
   mkdir -p /config/.irssi/scripts/autorun
   wget -q \
     -O /config/.irssi/scripts/autodl-irssi.zip \
-    $(curl -sX GET "https://api.github.com/repos/autodl-community/autodl-irssi/releases/latest" \
+    $(curl -sXL GET "https://api.github.com/repos/autodl-community/autodl-irssi/releases/latest" \
     | awk '/browser_download_url/{print $4;exit}' FS='[""]')
   unzip -d /config/.irssi/scripts \
     -o /config/.irssi/scripts/autodl-irssi.zip

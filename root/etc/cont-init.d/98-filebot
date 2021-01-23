@@ -40,7 +40,7 @@ fi
 if [ ! -e /usr/bin/mediainfo ]; then
   echo "**** mediainfo / libzen not found - installing ****"
   # get latest mediainfo / libzen versions
-  MEDIAINFO_VERSION=$(curl -sX GET https://api.github.com/repos/MediaArea/MediaInfo/releases/latest \
+  MEDIAINFO_VERSION=$(curl -sLX GET https://api.github.com/repos/MediaArea/MediaInfo/releases/latest \
     | awk '/tag_name/{print $4;exit}' FS='[""]')
   LIBZEN_VERSION=$(curl -sLX GET https://api.github.com/repos/MediaArea/ZenLib/releases/latest \
     | awk '/tag_name/{print $4;exit}' FS='[""]')

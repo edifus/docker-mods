@@ -29,7 +29,7 @@ if [ ! -e /usr/bin/filebot ]; then
   mv /usr/bin/filebot /usr/bin/filebot-bin
   cat << EOL > /usr/bin/filebot
 #!/usr/bin/with-contenv bash
-HOME=/config exec /usr/bin/filebot-bin "$@"
+HOME=/config exec /usr/bin/filebot-bin "\$@"
 EOL
   chmod +x /usr/bin/filebot
 else

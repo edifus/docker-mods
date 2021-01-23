@@ -23,6 +23,11 @@ if [ ! -e /usr/bin/irssi ]; then
     mkdir -p /config/.irssi
     echo 'load perl' > /config/.irssi/startup
   fi
+  mv /usr/bin/irssi /usr/bin/irssi-bin
+  cat << EOL > /usr/bin/irssi
+#!/usr/bin/with-contenv bash
+HOME=/config exec /usr/bin/irssi-bin "\$@"
+EOL
 else
   echo "**** irssi found - skipping ****"
     # recreate container to update

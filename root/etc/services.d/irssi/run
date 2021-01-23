@@ -7,11 +7,9 @@ _term() {
 
 trap _term SIGTERM
 
-export HOME="/config"
 export TERM="xterm-256color"
 screen -c /config/.screenrc \
   -D -m -S irssi \
-  s6-setuidgid abc \
-  /usr/bin/irssi --home /config/.irssi &
+  s6-setuidgid abc /usr/bin/irssi &
 
 wait

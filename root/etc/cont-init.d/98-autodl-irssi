@@ -28,6 +28,7 @@ if [ ! -e /usr/bin/irssi ]; then
 #!/usr/bin/with-contenv bash
 HOME=/config exec /usr/bin/irssi-bin "\$@"
 EOL
+  chmod +x /usr/bin/irssi
 else
   echo "**** irssi found - skipping ****"
     # recreate container to update

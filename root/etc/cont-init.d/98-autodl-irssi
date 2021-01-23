@@ -1,10 +1,10 @@
 #!/usr/bin/with-contenv bash
 
-# configure screen width to more than 80 columns
+# configure screen
 [[ ! -f /config/.screenrc ]] && \
   cp -v /defaults/screenrc /config/.screenrc
 
-# install irssi with perl dependancies and php7-sockets
+# install irssi, perl with dependancies and php7-sockets
 if [ ! -e /usr/bin/irssi ]; then
   echo "**** irssi not found - installing ****"
   apk add --no-cache --upgrade \
@@ -19,19 +19,20 @@ if [ ! -e /usr/bin/irssi ]; then
     perl-json \
     perl-json-xs
   if [ ! -d /config/.irssi ]; then
-    # first time setup (enable perl scripts for autodl-irssi)
+      # first time setup (enable perl for scripts)
     mkdir -p /config/.irssi
     echo 'load perl' > /config/.irssi/startup
   fi
 else
   echo "**** irssi found - skipping ****"
-  # recreate container to update
+    # recreate container to update
 fi
 
 # install autodl-irssi script
-if [ ! -e /config/.irssi/scripts/autorun/autodl-irssi.pl ]; then
-  echo "**** autodl-irssi not found - installing ****"
+if [ ! -e /config/.irssi/scripts/autorun/autodl-irssi.pl ] && \
+   [ ! -d /config/plugins/autodl-irssi ]; then
   adlpass=$(openssl rand -base64 20)
+  echo "**** autodl-irssi not found - installing ****"
   mkdir -p /config/.irssi/scripts/autorun
   wget -q \
     -O /config/.irssi/scripts/autodl-irssi.zip \
@@ -50,13 +51,6 @@ rt-address = /run/php/.rtorrent.sock
 gui-server-port = 64450
 gui-server-password = $adlpass
 EOL
-else
-  echo "**** autodl-irssi found - skipping ****"
-  # configured to auto-update in options
-fi
-
-# install/update autodl-irssi rutorrent plugin
-if [ ! -d /config/plugins/autodl-irssi ]; then
   echo "**** autodl-irssi rutorrent plugin not found - installing ****"
   if [ ! -d /config/plugins ]; then
     mkdir -p /config/plugins
@@ -72,7 +66,9 @@ if [ ! -d /config/plugins/autodl-irssi ]; then
 EOL
   unset adlpass
 elif [ -d /config/plugins/autodl-irssi ]; then
-  echo "**** autodl-irssi rutorrent plugin found - running update ****"
+  echo "**** autodl-irssi found - updating rutorrent plugin ****"
+    # autodl-irssi setup to auto-update in config
+    # autodl-irssi rutorrent plugin updates from git
   git -C /config/plugins/autodl-irssi pull --ff-only
 fi
 

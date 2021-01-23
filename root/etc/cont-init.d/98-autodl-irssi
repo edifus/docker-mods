@@ -47,13 +47,10 @@ if [ ! -e /config/.irssi/scripts/autorun/autodl-irssi.pl ] && \
   mkdir -p /config/.autodl
   cat << EOL > /config/.autodl/autodl.cfg
 [options]
-update-check = auto
-EOL
-  cat << EOL > /config/.autodl/autodl2.cfg
-[options]
 rt-address = /run/php/.rtorrent.sock
 gui-server-port = 64450
 gui-server-password = $adlpass
+update-check = auto
 EOL
   echo "**** autodl-irssi rutorrent plugin not found - installing ****"
   if [ ! -d /config/plugins ]; then

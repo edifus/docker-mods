@@ -34,10 +34,11 @@ if [ ! -e /config/.irssi/scripts/autorun/autodl-irssi.pl ] && \
   adlpass=$(openssl rand -base64 20)
   echo "**** autodl-irssi not found - installing ****"
   mkdir -p /config/.irssi/scripts/autorun
+  AUTODL_URL=$(curl -sLX GET "https://api.github.com/repos/autodl-community/autodl-irssi/releases/latest" \
+    | awk '/browser_download_url/{print $4;exit}' FS='[""]')
   wget -q \
     -O /config/.irssi/scripts/autodl-irssi.zip \
-    $(curl -sLX GET "https://api.github.com/repos/autodl-community/autodl-irssi/releases/latest" \
-    | awk '/browser_download_url/{print $4;exit}' FS='[""]')
+    ${AUTODL_URL}
   unzip -d /config/.irssi/scripts \
     -o /config/.irssi/scripts/autodl-irssi.zip
   rm -f /config/.irssi/scripts/autodl-irssi.zip

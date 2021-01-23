@@ -9,7 +9,6 @@ if [ ! -e /usr/bin/java ]; then
     libjna-java \
     libcurl3-gnutls \
     libmms0 \
-    jq \
     libchromaprint-tools \
     p7zip-rar \
     mkvtoolnix \
@@ -27,6 +26,12 @@ if [ ! -e /usr/bin/filebot ]; then
   echo "deb [arch=all] https://get.filebot.net/deb/ universal main" > /etc/apt/sources.list.d/filebot.list
   apt-get update -y -q
   DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends filebot
+  mv /usr/bin/filebot /usr/bin/filebot-bin
+  cat << EOL > /usr/bin/filebot
+#!/usr/bin/with-contenv bash
+HOME=/config /usr/bin/filebot-bin
+EOL
+  chmod +x /usr/bin/filebot
 else
   echo "**** filebot found - skipping install ****"
 fi
@@ -35,10 +40,10 @@ fi
 if [ ! -e /usr/bin/mediainfo ]; then
   echo "**** mediainfo / libzen not found - installing ****"
   # get latest mediainfo / libzen versions
-  MEDIAINFO_VERSION=$(curl -sL https://api.github.com/repos/MediaArea/MediaInfo/releases/latest \
-    | jq -r '.tag_name')
-  LIBZEN_VERSION=$(curl -sL https://api.github.com/repos/MediaArea/ZenLib/releases/latest \
-    | jq -r '.tag_name')
+  MEDIAINFO_VERSION=$(curl -sX GET https://api.github.com/repos/MediaArea/MediaInfo/releases/latest \
+    | awk '/tag_name/{print $4;exit}' FS='[""]')
+  LIBZEN_VERSION=$(curl -sLX GET https://api.github.com/repos/MediaArea/ZenLib/releases/latest \
+    | awk '/tag_name/{print $4;exit}' FS='[""]')
 
   # mediainfo and libzen packages
   MEDIAINFO_PACKAGE="mediainfo_${MEDIAINFO_VERSION:1}-1_amd64.xUbuntu_18.04.deb"
@@ -60,7 +65,10 @@ else
 fi
 
 # clean-up
-rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
+rm -rf \
+  /tmp/* \
+  /var/tmp/* \
+  /var/lib/apt/lists/*
 
 # confirm filebot install
 echo "**** exec \"filebot -script fn:sysinfo\" ****"

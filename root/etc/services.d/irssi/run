@@ -10,6 +10,6 @@ trap _term SIGTERM
 export TERM="xterm-256color"
 screen -c /config/.screenrc \
   -D -m -S irssi \
-  s6-setuidgid abc /usr/bin/irssi &
+  s6-setuidgid abc /usr/bin/irssi-bin &
 
 wait

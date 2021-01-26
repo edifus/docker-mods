@@ -3,9 +3,8 @@ name: Build Image
 on: [push, pull_request, workflow_dispatch]
 
 env:
-  ENDPOINT: "linuxserver/mods"
-  BASEIMAGE: "deluge"
-  MODNAME: "filebot"
+  ENDPOINT: "edifus/docker-mods"
+  BRANCH: "deluge-filebot"
 
 jobs:
   build:

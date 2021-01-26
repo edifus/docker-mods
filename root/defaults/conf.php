@@ -1,4 +1,4 @@
 <?php
-  $autodlPort = adlport;
-  $autodlPassword = "adlpass";
+  $autodlPort = !adlport;
+  $autodlPassword = "!adlpass";
 ?>

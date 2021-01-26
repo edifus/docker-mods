@@ -34,9 +34,9 @@ fi
 # install autodl-irssi script
 if [ ! -e /config/.irssi/scripts/autorun/autodl-irssi.pl ] && \
    [ ! -d /config/plugins/autodl-irssi ]; then
+  echo "**** autodl-irssi not found - running first time setup ****"
   adlport=$(shuf -i 60000-65000 -n 1)
   adlpass=$(openssl rand -base64 20)
-  echo "**** autodl-irssi not found - installing ****"
   mkdir -p /config/.irssi/scripts/autorun
   AUTODL_URL=$(curl -sLX GET "https://api.github.com/repos/autodl-community/autodl-irssi/releases/latest" \
     | awk '/browser_download_url/{print $4;exit}' FS='[""]')
@@ -49,24 +49,24 @@ if [ ! -e /config/.irssi/scripts/autorun/autodl-irssi.pl ] && \
   cp -v /config/.irssi/scripts/autodl-irssi.pl \
     /config/.irssi/scripts/autorun/
   mkdir -p /config/.autodl
+  echo "**** creating /config/.autodl/autodl.cfg ****"
   cat /defaults/autodl.cfg \
-    | sed "s|gui-server-password = adlpass|gui-server-password = ${adlpass}|; s|gui-server-port = adlport|gui-server-port = ${adlport}|" \
+    | sed "s|\!adlpass|${adlpass}|; s|\!adlport|${adlport}|" \
     | tee /config/.autodl/autodl.cfg
-  echo "**** autodl-irssi rutorrent plugin not found - installing ****"
+  echo "**** installing autodl-irssi rutorrent plugin ****"
   if [ ! -d /config/plugins ]; then
     mkdir -p /config/plugins
     chown abc:abc /config/plugins
   fi
   git clone https://github.com/autodl-community/autodl-rutorrent.git \
     /config/plugins/autodl-irssi
+  echo "**** creating /config/plugins/autodl-irssi/conf.php ****"
   cat /defaults/conf.php \
-    | sed "s|\$autodlPort = adlport;|\$autodlPort = ${adlport};|; s|\$autodlPassword = \"adlpass\";|\$autodlPassword = \"${adlpass}\";|" \
+    | sed "s|\!adlport|${adlport}|; s|\!adlpass|${adlpass}|" \
     | tee /config/plugins/autodl-irssi/conf.php
   unset adlport
   unset adlpass
 elif [ -d /config/plugins/autodl-irssi ]; then
-  # autodl-irssi setup to auto-update in config
-  # autodl-irssi rutorrent plugin updates from git
   echo "**** autodl-irssi found - updating rutorrent plugin ****"
   git -C /config/plugins/autodl-irssi pull --ff-only
 fi

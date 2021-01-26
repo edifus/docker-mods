@@ -3,9 +3,8 @@ name: Build Image
 on: [push, pull_request, workflow_dispatch]
 
 env:
-  ENDPOINT: "linuxserver/mods"
-  BASEIMAGE: "rutorrent"
-  MODNAME: "autodl-irssi"
+  ENDPOINT: "edifus/mods"
+  BRANCH: "rutorrent-autodl-irssi"
 
 jobs:
   build:

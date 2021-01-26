@@ -3,8 +3,9 @@ name: Build Image
 on: [push, pull_request, workflow_dispatch]
 
 env:
-  ENDPOINT: "edifus/mods"
-  BRANCH: "rutorrent-autodl-irssi"
+  ENDPOINT: "edifus/mods" #don't modify
+  BASEIMAGE: "rutorrent" #replace
+  MODNAME: "autodl-irssi" #replace
 
 jobs:
   build:
@@ -14,18 +15,26 @@ jobs:
 
       - name: Build image
         run: |
-          docker build --no-cache -t ${{ github.sha }} .
-
+          # Set version
+          DOTNET_JSON="$(curl --retry 5 -sX GET https://raw.githubusercontent.com/dotnet/core/master/release-notes/releases-index.json)"
+          DOTNET_VERSIONS="$(echo $DOTNET_JSON | jq -r '."releases-index"[] | select(."support-phase"=="lts" or ."support-phase"=="current") | ."latest-sdk"' | tr '\n' ' ' | head -c -1)"
+          DOTNET_TAG="$(echo $DOTNET_VERSIONS | tr ' ' '_')"
+          echo "DOTNET_TAG=${DOTNET_TAG}" >> $GITHUB_ENV
+          # Build image
+          docker build --no-cache --build-arg DOTNET_VERSIONS="${DOTNET_VERSIONS}" -t ${{ github.sha }} .
       - name: Tag image
-        if: ${{ github.ref == env.BRANCH }}
+        if: ${{ github.ref == format('refs/heads/{0}-{1}', env.BASEIMAGE, env.MODNAME) }}
         run: |
-          docker tag ${{ github.sha }} ${ENDPOINT}:
-          docker tag ${{ github.sha }} ${ENDPOINT}:${{ github.sha }}
-          docker tag ${{ github.sha }} ghcr.io/${ENDPOINT}:
-          docker tag ${{ github.sha }} ghcr.io/${ENDPOINT}:${{ github.sha }}
-
+          docker tag ${{ github.sha }} ${ENDPOINT}:${BASEIMAGE}-${MODNAME}
+          docker tag ${{ github.sha }} ${ENDPOINT}:${BASEIMAGE}-${MODNAME}-${{ env.DOTNET_TAG }}
+          docker tag ${{ github.sha }} ${ENDPOINT}:${BASEIMAGE}-${MODNAME}-${{ env.DOTNET_TAG }}-${{ github.sha }}
+          docker tag ${{ github.sha }} ${ENDPOINT}:${BASEIMAGE}-${MODNAME}-${{ github.sha }}
+          docker tag ${{ github.sha }} ghcr.io/${ENDPOINT}:${BASEIMAGE}-${MODNAME}
+          docker tag ${{ github.sha }} ghcr.io/${ENDPOINT}:${BASEIMAGE}-${MODNAME}-${{ env.DOTNET_TAG }}
+          docker tag ${{ github.sha }} ghcr.io/${ENDPOINT}:${BASEIMAGE}-${MODNAME}-${{ env.DOTNET_TAG }}-${{ github.sha }}
+          docker tag ${{ github.sha }} ghcr.io/${ENDPOINT}:${BASEIMAGE}-${MODNAME}-${{ github.sha }}
       - name: Credential check
-        if: ${{ github.ref == env.BRANCH }}
+        if: ${{ github.ref == format('refs/heads/{0}-{1}', env.BASEIMAGE, env.MODNAME) }}
         run: |
           echo "CR_USER=${{ secrets.CR_USER }}" >> $GITHUB_ENV
           echo "CR_PAT=${{ secrets.CR_PAT }}" >> $GITHUB_ENV
@@ -37,25 +46,19 @@ jobs:
             echo "::error::See https://github.com/linuxserver/docker-mods/blob/master/README.md for more information/instructions."
             exit 1
           fi
-
       - name: Login to GitHub Container Registry
-        if: ${{ github.ref == env.BRANCH && env.CR_USER && env.CR_PAT }}
+        if: ${{ github.ref == format('refs/heads/{0}-{1}', env.BASEIMAGE, env.MODNAME) && env.CR_USER && env.CR_PAT }}
         run: |
           echo "${{ secrets.CR_PAT }}" | docker login ghcr.io -u ${{ secrets.CR_USER }} --password-stdin
-
       - name: Push tags to GitHub Container Registry
-        if: ${{ github.ref == env.BRANCH && env.CR_USER && env.CR_PAT }}
+        if: ${{ github.ref == format('refs/heads/{0}-{1}', env.BASEIMAGE, env.MODNAME) && env.CR_USER && env.CR_PAT }}
         run: |
-          docker push ghcr.io/${ENDPOINT}:${{ github.sha }}
-          docker push ghcr.io/${ENDPOINT}:
-
+          docker push ghcr.io/${ENDPOINT}:${BASEIMAGE}-${MODNAME}
       - name: Login to DockerHub
-        if: ${{ github.ref == env.BRANCH && env.DOCKERUSER && env.DOCKERPASS }}
+        if: ${{ github.ref == format('refs/heads/{0}-{1}', env.BASEIMAGE, env.MODNAME) && env.DOCKERUSER && env.DOCKERPASS }}
         run: |
           echo ${{ secrets.DOCKERPASS }} | docker login -u ${{ secrets.DOCKERUSER }} --password-stdin
-
       - name: Push tags to DockerHub
-        if: ${{ github.ref == env.BRANCH && env.DOCKERUSER && env.DOCKERPASS }}
+        if: ${{ github.ref == format('refs/heads/{0}-{1}', env.BASEIMAGE, env.MODNAME) && env.DOCKERUSER && env.DOCKERPASS }}
         run: |
-          docker push ${ENDPOINT}:${{ github.sha }}
-          docker push ${ENDPOINT}:
+          docker push ${ENDPOINT}:${BASEIMAGE}-${MODNAME}

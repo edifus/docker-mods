@@ -8,14 +8,13 @@ If adding multiple mods, enter them in an array separated by `|`, such as `DOCKE
 
 
 ## Information
-* Recommend using an IRC bouncer such as [ZNC](https://github.com/linuxserver/docker-znc)
+* Recommended to use an IRC bouncer such as [ZNC](https://github.com/linuxserver/docker-znc)
 
 ### Access irssi inside container
 * `docker exec -it rutorrent screen -r irssi`
 
-### irssi scripts and themes
-* Themes
-  * Install in /config/.irssi
-* Scripts 
-  * Install in /config/.irssi/scripts
+To disconnect from irssi session, use the normal gnu screen command (Ctrl+a d)
+* `/config/.screenrc` can be customized to change screen configuration for irssi. These settings will not apply to screen running rtorrent.
 
+###
+* `/config/.irssi/` this directory contains the configuration for irssi and can be used to install additional scripts and themes

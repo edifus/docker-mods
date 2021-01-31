@@ -19,13 +19,10 @@ if [ ! -e /usr/bin/irssi ]; then
     perl-json \
     perl-json-xs
   if [ ! -d /config/.irssi ]; then
-      # first time setup (enable perl for scripts)
+    # first time setup
     mkdir -p /config/.irssi
     echo 'load perl' > /config/.irssi/startup
   fi
-  cp /defaults/irssi-bin \
-    /usr/bin/irssi-bin
-  chmod +x /usr/bin/irssi-bin
 else
   echo "**** irssi found - skipping ****"
     # recreate container to update

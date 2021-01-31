@@ -1,5 +1,0 @@
-#!/usr/bin/with-contenv bash
-
-# proper home directory for irssi-autodl
-HOME=/config \
-    exec /usr/bin/irssi "$@"

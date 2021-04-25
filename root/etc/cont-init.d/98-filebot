@@ -44,6 +44,10 @@ if [ ! -e /usr/bin/mediainfo ]; then
     | awk '/tag_name/{print $4;exit}' FS='[""]')
   LIBZEN_VERSION=$(curl -sLX GET https://api.github.com/repos/MediaArea/ZenLib/releases/latest \
     | awk '/tag_name/{print $4;exit}' FS='[""]')
+  
+  # fix for api limiting
+  MEDIAINFO_VERSION=${MEDIAINFO_VERSION:-v21.03}
+  LIBZEN_VERSION=${LIBZEN_VERSION:-v21.03}
 
   # mediainfo and libzen packages
   MEDIAINFO_PACKAGE="mediainfo_${MEDIAINFO_VERSION:1}-1_amd64.xUbuntu_18.04.deb"

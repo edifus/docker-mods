@@ -1,0 +1,7 @@
+#!/usr/bin/with-contenv bash
+
+# sleep to let chia node services start
+sleep 30
+
+# run dashboard
+s6-setuidgid abc /usr/local/bin/chia-dashboard-satellite

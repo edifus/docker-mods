@@ -1,0 +1,25 @@
+#!/usr/bin/with-contenv bash
+
+if [[ ! -f /usr/local/bin/chia-dashboard-satellite ]]
+then
+  echo "**** Dashboard Satellite not found - installing ****"
+
+  # get latest version
+  SATELLITE_RELEASE=$(curl -sX GET "https://api.github.com/repos/felixbrucker/chia-dashboard-satellite/releases/latest" \
+    | awk '/tag_name/{print $4;exit}' FS='[""]')
+
+  # download latest version
+  curl -o /tmp/satellite.zip \
+    -L "https://github.com/felixbrucker/chia-dashboard-satellite/releases/download/${SATELLITE_RELEASE}/chia-dashboard-satellite-${SATELLITE_RELEASE}-linux.zip"
+
+  # install
+  unzip -j -o /tmp/satellite.zip -d /usr/local/bin
+  chmod +x /usr/local/bin/chia-dashboard-satellite
+
+  echo ${SATELLITE_RELEASE} > /config/.satellite-version
+
+  # cleanup
+  rm -f /tmp/satellite.zip
+else
+  echo "**** Dashboard Satellite already found - skipping ****"
+fi
